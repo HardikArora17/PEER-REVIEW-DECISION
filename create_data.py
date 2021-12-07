@@ -1,5 +1,6 @@
 
 
+import random
 import pickle
 import os
 import jsonlines
@@ -12,7 +13,7 @@ from tqdm.autonotebook import tqdm
 if(os.path.isdir('input_files')!=True):
     os.mkdir('input_files')
 
-def create_data():
+def create_data(conf_name):
     data_path=r'raw_dataset/dataset/aspect_data'
     r_data={}
     counter=0
@@ -25,7 +26,7 @@ def create_data():
         
         for line in tqdm(pbar,desc='Loading Phrases from Data'):
             id1=line['id']
-            if(id1.startswith('NIPS')):
+            if(not id1.startswith(conf_name)):
                 continue
             s=line['text']
             labels=line['labels']
@@ -74,7 +75,7 @@ def create_data():
     decision_data={}
 
     for conf in os.listdir(data_path):
-        if(conf=='aspect_data' or conf.startswith("NIPS")):
+        if(not conf.startswith(conf_name)):
             continue
             
         for dire in (os.listdir(os.path.join(data_path,conf))):
@@ -96,9 +97,17 @@ def create_data():
     print("Number of Accepted Papers :",list(decision_data.values()).count('accept'))
     print("Number of Rejected Papers :",list(decision_data.values()).count('reject'))
 
+    s1=list(zip(list(phrase_data.keys()),list(phrase_data.values())))
 
-    with open("input_files/paper_review_phrases.pickle",'wb') as out:
-        pickle.dump(phrase_data,out)
+    random.shuffle(s1)
+    a,b = zip(*s1)
+
+    p_data={k:v for k,v in zip(a,b)}
+
+    with open("input_files/paper_review_phrases_"+conf_name+".pickle",'wb') as out:
+        pickle.dump(p_data,out)
         
-    with open("input_files/paper_decision.pickle",'wb') as out:
+    with open("input_files/paper_decision_"+conf_name+".pickle",'wb') as out:
         pickle.dump(decision_data,out)
+
+        
