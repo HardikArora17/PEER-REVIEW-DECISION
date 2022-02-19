@@ -4,7 +4,7 @@ import pickle
 import torch.nn as nn
 import torch.nn.functional as F
 import numpy as np
-from   todays_model_ACL_CONVO import AADP
+from   model import AADP
 from transformers import AdamW, get_linear_schedule_with_warmup
 from tqdm.autonotebook import tqdm
 
@@ -12,7 +12,7 @@ from tqdm.autonotebook import tqdm
 import os
 import torch
 import matplotlib.pyplot as plt
-from todays_dataloader_vader_NEW_CONVO import getLoaders
+from dataloader import getLoaders
 from tqdm.autonotebook import tqdm
 from sklearn.metrics import f1_score,precision_score,recall_score,accuracy_score,classification_report
 
@@ -145,7 +145,7 @@ for epoch in range(EPOCH):
 
   if(epoch==EPOCH-1):
     print(classification_report(val_true,val_out))
-    with open("JCDL_MODEL/weight_matrix_ACL_Convolution_full.pickle",'wb') as out:
+    with open("weight_matrix_JCDL.pickle",'wb') as out:
       pickle.dump(w_m,out)
 
 
@@ -157,12 +157,12 @@ for epoch in range(EPOCH):
 
   
   if(accuracy_score(val_true,val_out)>max_acc):
-    torch.save(text_model.state_dict(), "JCDL_MODEL/final_model.pt")
+    torch.save(text_model.state_dict(), "final_model.pt")
     max_acc=accuracy_score(val_true,val_out)
     best_val_out=val_out
 
     
 plt.plot(range(len(loss_log1)), loss_log1)
 plt.plot(range(len(loss_log2)), loss_log2)
-plt.savefig('JCDL_MODEL/loss_curve.png')
+plt.savefig('loss_curve.png')
 print("MAXIMUM ACCURACY:",max_acc)
