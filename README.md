@@ -12,10 +12,13 @@ The files from  the above link will be downloaded and stored in a folder named d
 After this follow the steps below to run the model
 
 Step 1 -This will take you inside the dataset directory.
+
     cd dataset
 
 Step -2 This will create the files in accordance with the needs of the model. The model will be stored  in a file named input_files.
+
     python create_data.py
    
 Step -3 Now run the model code by running the main.py file
+
     python main.py 
