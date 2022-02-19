@@ -1,7 +1,5 @@
 
-# #Creating the input data
-# from create_data import create_data
-# create_data("")
+
 import pickle
 import torch.nn as nn
 import torch.nn.functional as F
@@ -18,7 +16,7 @@ from todays_dataloader_vader_NEW_CONVO import getLoaders
 from tqdm.autonotebook import tqdm
 from sklearn.metrics import f1_score,precision_score,recall_score,accuracy_score,classification_report
 
-batch_size=8
+batch_size=16
 
 torch.manual_seed(400)
 np.random.seed(400)
@@ -31,7 +29,7 @@ print("Length of ValidLoader:",len(val_loader))
 
 
 if torch.cuda.is_available():      
-    device = torch.device("cuda:2")
+    device = torch.device("cuda:1")
 else:
   print('No GPU available, using the CPU instead.')
   device = torch.device("cpu")
@@ -147,11 +145,9 @@ for epoch in range(EPOCH):
 
   if(epoch==EPOCH-1):
     print(classification_report(val_true,val_out))
-    with open("weight_matrix_ACL_Convolution_full.pickle",'wb') as out:
+    with open("JCDL_MODEL/weight_matrix_ACL_Convolution_full.pickle",'wb') as out:
       pickle.dump(w_m,out)
 
-    # with open("weight_matrix_sentiment_ACL_Convolution_full.pickle",'wb') as out:
-    #   pickle.dump(s_i,out)
 
   train_f1_log.append(f1_score(train_true,train_out))
   val_f1_log.append(f1_score(val_true,val_out))
@@ -161,12 +157,12 @@ for epoch in range(EPOCH):
 
   
   if(accuracy_score(val_true,val_out)>max_acc):
-    torch.save(text_model.state_dict(), "ACL_Convolution_full_90.pt")
+    torch.save(text_model.state_dict(), "JCDL_MODEL/final_model.pt")
     max_acc=accuracy_score(val_true,val_out)
     best_val_out=val_out
 
     
 plt.plot(range(len(loss_log1)), loss_log1)
 plt.plot(range(len(loss_log2)), loss_log2)
-plt.savefig('ACL_Convolution_full.png')
+plt.savefig('JCDL_MODEL/loss_curve.png')
 print("MAXIMUM ACCURACY:",max_acc)
